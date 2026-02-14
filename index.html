@@ -913,8 +913,19 @@
           <div style="background: white; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
             <div style="font-size: 28px; font-weight: 700; color: #f472b6; letter-spacing: 4px;" id="shareCodeSettings">-----</div>
           </div>
-          <p style="font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 8px;">このコードを相手に教えてください</p>
-          <p style="font-size: 11px; color: #ef4444; text-align: center;">※2人とも同じコードを入力すると同期されます</p>
+          <p style="font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 12px;">このコードを相手に教えてください</p>
+          
+          <div style="border-top: 1px solid #fce7f3; padding-top: 12px; margin-top: 12px;">
+            <p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">相手のコードを入力して同期:</p>
+            <input type="text" id="joinShareCode" placeholder="相手のコードを入力" maxlength="10"
+              style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; text-transform: uppercase; margin-bottom: 8px;">
+            <button onclick="joinWithCode()" 
+              style="width: 100%; padding: 10px; background: #f472b6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+              このコードで同期する
+            </button>
+          </div>
+          
+          <p style="font-size: 11px; color: #ef4444; text-align: center; margin-top: 8px;">※2人とも同じコードを入力すると同期されます</p>
         </div>
 
         <div style="margin-bottom: 24px; padding: 16px; background: #f9fafb; border-radius: 12px;">
@@ -989,13 +1000,19 @@
         <label>相手の名前</label>
         <input type="text" id="partnerNameInput" placeholder="例: はなこ" maxlength="10">
       </div>
+
+      <div class="name-input-group">
+        <label>共有コード</label>
+        <input type="text" id="shareCodeInput" placeholder="相手から教わったコードを入力" maxlength="10" style="text-transform: uppercase;">
+        <p style="font-size: 11px; color: #6b7280; margin-top: 4px;">※相手がいない場合は空欄でOK</p>
+      </div>
       
       <button class="setup-btn" onclick="saveNames()">保存して開始</button>
       
       <div class="share-section">
-        <h4>🔗 共有コード</h4>
+        <h4>🔗 あなたの共有コード</h4>
         <div class="share-code" id="shareCodeDisplay">-----</div>
-        <p class="share-hint">相手もこのコードを入力すれば同期されます</p>
+        <p class="share-hint">このコードを相手に教えてください</p>
       </div>
     </div>
   </div>
@@ -1168,12 +1185,23 @@
       myName = document.getElementById('myNameInput').value.trim() || '自分';
       partnerName = document.getElementById('partnerNameInput').value.trim() || '相手';
       
+      // 共有コードが入力されていればそれを使う
+      const inputShareCode = document.getElementById('shareCodeInput').value.trim().toUpperCase();
+      if (inputShareCode) {
+        shareCode = inputShareCode;
+        localStorage.setItem('shareCode', shareCode);
+        console.log('入力された共有コードを使用:', shareCode);
+      }
+      
       localStorage.setItem('myName', myName);
       localStorage.setItem('partnerName', partnerName);
       
       saveNamesToFirebase();
       updateNameDisplays();
       document.getElementById('setupModal').classList.remove('show');
+      
+      // Firebaseリスナーを再設定
+      setupFirebaseListeners();
     };
 
     window.updateNameDisplays = function() {
@@ -1446,6 +1474,32 @@
       
       updateNameDisplays();
       alert('名前を保存しました！');
+    };
+
+    window.joinWithCode = function() {
+      const inputCode = document.getElementById('joinShareCode').value.trim().toUpperCase();
+      
+      if (!inputCode) {
+        alert('共有コードを入力してください');
+        return;
+      }
+      
+      if (inputCode === shareCode) {
+        alert('既にこのコードを使用中です');
+        return;
+      }
+      
+      if (confirm(`共有コード「${inputCode}」で同期しますか？\n\n※現在のデータは「${shareCode}」に残ります`)) {
+        shareCode = inputCode;
+        localStorage.setItem('shareCode', shareCode);
+        
+        // データをリセット
+        myShifts = {};
+        partnerShifts = {};
+        
+        alert('共有コードを変更しました！\nページを再読み込みします。');
+        location.reload();
+      }
     };
 
 
