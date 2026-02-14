@@ -56,6 +56,15 @@
       box-shadow: 0 4px 6px rgba(244, 114, 182, 0.3);
     }
 
+    .app-title {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .app-title:active {
+      opacity: 0.7;
+    }
+
     .app-title h1 {
       font-size: 24px;
       color: #1f2937;
@@ -890,7 +899,7 @@
     <div class="header-content">
       <div class="header-left">
         <div class="app-icon">📅</div>
-        <div class="app-title">
+        <div class="app-title" onclick="goToToday()">
           <h1>マイシフト</h1>
           <p>シフト管理</p>
         </div>
@@ -943,7 +952,6 @@
           <button onclick="changeMonth(-1)">←</button>
           <div style="display: flex; align-items: center;">
             <button id="monthTitle" class="month-title-btn" onclick="openDatePicker()"></button>
-            <button class="today-btn" onclick="goToToday()">今日</button>
           </div>
           <button onclick="changeMonth(1)">→</button>
         </div>
