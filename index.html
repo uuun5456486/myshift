@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#f472b6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>マイシフト - シフト管理</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fce7f3 0%, #dbeafe 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .header {
+      background: white;
+      border-bottom: 4px solid #f472b6;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #f472b6, #db2777);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 6px rgba(244, 114, 182, 0.3);
+    }
+
+    .app-title h1 {
+      font-size: 24px;
+      color: #1f2937;
+      font-weight: 700;
+    }
+
+    .app-title p {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .sync-status {
+      font-size: 11px;
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sync-dot {
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: white;
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: #f472b6;
+      color: white;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .profile-selector {
+      background: white;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .profile-selector h3 {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .profile-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .profile-btn {
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .profile-btn.active {
+      border-color: #f472b6;
+      background: #fce7f3;
+      color: #db2777;
+    }
+
+    .profile-btn:active {
+      transform: scale(0.95);
+    }
+
+    .profile-icon {
+      font-size: 20px;
+    }
+
+    .profile-name {
+      font-size: 11px;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 8px;
+      justify-content: center;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .my-dot { background: #f472b6; }
+    .partner-dot { background: #a855f7; }
+
+    .month-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .month-nav button {
+      background: none;
+      border: none;
+      font-size: 24px;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .month-nav button:active {
+      background: #fce7f3;
+    }
+
+    .month-nav h2 {
+      font-size: 18px;
+      color: #1f2937;
+    }
+
+    .shift-stamps {
+      margin-bottom: 16px;
+    }
+
+    .shift-stamps h3 {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .stamps-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stamp {
+      padding: 12px 8px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .stamp:active {
+      transform: scale(0.95);
+    }
+
+    .stamp.active {
+      box-shadow: 0 0 0 3px #f472b6;
+      transform: scale(1.05);
+    }
+
+    .stamp-day { background: #fbbf24; color: #78350f; }
+    .stamp-night { background: #4f46e5; color: white; }
+    .stamp-early { background: #fb923c; color: #7c2d12; }
+    .stamp-late { background: #a855f7; color: white; }
+    .stamp-off { background: #4ade80; color: #14532d; }
+
+    .help-text {
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .weekday {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 0;
+    }
+
+    .weekday:first-child { color: #ef4444; }
+    .weekday:last-child { color: #3b82f6; }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      border: 2px solid #f3f4f6;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4px;
+    }
+
+    .calendar-day:active {
+      transform: scale(0.95);
+    }
+
+    .calendar-day.today {
+      background: #fce7f3;
+    }
+
+    .day-number {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .day-shift {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 4px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      animation: fadeIn 0.2s;
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+      width: 100%;
+      max-width: 600px;
+      animation: slideUp 0.3s;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h3 {
+      font-size: 18px;
+      color: #1f2937;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px;
+      color: #6b7280;
+    }
+
+    .shift-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .shift-option {
+      padding: 20px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .shift-option:active {
+      transform: scale(0.95);
+    }
+
+    .shift-time {
+      font-size: 11px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+
+    .delete-btn {
+      width: 100%;
+      padding: 14px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .delete-btn:active {
+      background: #dc2626;
+    }
+
+    .mode-indicator {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #f472b6, #db2777);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(244, 114, 182, 0.4);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: slideDown 0.3s;
+    }
+
+    .mode-indicator.show {
+      display: flex;
+    }
+
+    @keyframes slideDown {
+      from { 
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .mode-cancel {
+      background: rgba(255,255,255,0.3);
+      border: none;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    .setup-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .setup-modal.show {
+      display: flex;
+    }
+
+    .setup-content {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      max-width: 400px;
+      width: 100%;
+      animation: slideUp 0.3s;
+    }
+
+    .setup-content h2 {
+      font-size: 20px;
+      color: #1f2937;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .setup-content p {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .name-input-group {
+      margin-bottom: 16px;
+    }
+
+    .name-input-group label {
+      display: block;
+      font-size: 14px;
+      color: #1f2937;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .name-input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+    }
+
+    .name-input-group input:focus {
+      outline: none;
+      border-color: #f472b6;
+    }
+
+    .setup-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #f472b6, #db2777);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .setup-btn:active {
+      transform: scale(0.98);
+    }
+
+    .share-section {
+      margin-top: 20px;
+      padding: 16px;
+      background: #f9fafb;
+      border-radius: 12px;
+    }
+
+    .share-section h4 {
+      font-size: 14px;
+      color: #1f2937;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .share-code {
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 18px;
+      text-align: center;
+      letter-spacing: 2px;
+      color: #f472b6;
+      font-weight: 700;
+      border: 2px dashed #f472b6;
+      margin-bottom: 8px;
+    }
+
+    .share-hint {
+      font-size: 12px;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .stats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background: #f9fafb;
+      border-radius: 8px;
+    }
+
+    .stat-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .stat-info h4 {
+      font-size: 14px;
+      color: #1f2937;
+      margin-bottom: 2px;
+    }
+
+    .stat-info p {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .stat-count {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .summary-box {
+      margin-top: 16px;
+      padding: 16px;
+      background: #fce7f3;
+      border-radius: 8px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .summary-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .summary-label {
+      color: #6b7280;
+    }
+
+    .summary-value {
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .password-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #fce7f3 0%, #dbeafe 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      padding: 20px;
+    }
+
+    .password-screen.hidden {
+      display: none;
+    }
+
+    .password-box {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .password-box h2 {
+      font-size: 24px;
+      color: #1f2937;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .password-box p {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .password-input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 18px;
+      text-align: center;
+      letter-spacing: 2px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      font-family: inherit;
+    }
+
+    .password-input:focus {
+      outline: none;
+      border-color: #f472b6;
+    }
+
+    .password-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #f472b6, #db2777);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .password-btn:active {
+      transform: scale(0.98);
+    }
+
+    .password-error {
+      color: #ef4444;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .password-error.show {
+      display: block;
+    }
+
+    .lock-icon {
+      font-size: 64px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="password-screen" id="passwordScreen">
+    <div class="password-box">
+      <div class="lock-icon">🔒</div>
+      <h2>パスワード入力</h2>
+      <p>2人だけのパスワードを入力してください</p>
+      <input 
+        type="password" 
+        class="password-input" 
+        id="passwordInput" 
+        placeholder="パスワード"
+        maxlength="20"
+      >
+      <button class="password-btn" onclick="checkPassword()">ログイン</button>
+      <div class="password-error" id="passwordError">パスワードが違います</div>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="header-content">
+      <div class="header-left">
+        <div class="app-icon">📅</div>
+        <div class="app-title">
+          <h1>マイシフト</h1>
+          <p>シフト管理</p>
+        </div>
+      </div>
+      <div class="sync-status" id="syncStatus">
+        <div class="sync-dot"></div>
+        <span>同期中</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mode-indicator" id="modeIndicator">
+    <span id="modeText"></span>
+    <button class="mode-cancel" onclick="cancelMode()">キャンセル</button>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('calendar')">カレンダー</button>
+      <button class="tab" onclick="switchTab('settings')">設定</button>
+    </div>
+
+    <div id="calendarTab">
+      <div class="profile-selector">
+        <h3>表示切替</h3>
+        <div class="profile-buttons">
+          <button class="profile-btn active" onclick="switchProfile('mine')" id="btnMine">
+            <div class="profile-icon">👤</div>
+            <div class="profile-name" id="myNameDisplay">自分</div>
+          </button>
+          <button class="profile-btn" onclick="switchProfile('partner')" id="btnPartner">
+            <div class="profile-icon">💜</div>
+            <div class="profile-name" id="partnerNameDisplay">相手</div>
+          </button>
+          <button class="profile-btn" onclick="switchProfile('both')" id="btnBoth">
+            <div class="profile-icon">👥</div>
+            <div class="profile-name">両方</div>
+          </button>
+        </div>
+        <div class="legend" id="legend" style="display: none;">
+          <div class="legend-dot my-dot"></div>
+          <span id="myNameLegend">自分</span>
+          <div class="legend-dot partner-dot"></div>
+          <span id="partnerNameLegend">相手</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="month-nav">
+          <button onclick="changeMonth(-1)">←</button>
+          <h2 id="monthTitle"></h2>
+          <button onclick="changeMonth(1)">→</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="weekdays">
+          <div class="weekday">日</div>
+          <div class="weekday">月</div>
+          <div class="weekday">火</div>
+          <div class="weekday">水</div>
+          <div class="weekday">木</div>
+          <div class="weekday">金</div>
+          <div class="weekday">土</div>
+        </div>
+        <div class="calendar-grid" id="calendar"></div>
+      </div>
+
+      <div class="card shift-stamps">
+        <h3>シフトスタンプ</h3>
+        <div class="stamps-grid">
+          <div class="stamp stamp-day" onclick="selectMode('day')">☀️<br>日勤</div>
+          <div class="stamp stamp-night" onclick="selectMode('night')">🌙<br>夜勤</div>
+          <div class="stamp stamp-early" onclick="selectMode('early')">🌅<br>早番</div>
+          <div class="stamp stamp-late" onclick="selectMode('late')">🕐<br>遅番</div>
+          <div class="stamp stamp-off" onclick="selectMode('off')">☕<br>休み</div>
+        </div>
+        <p class="help-text" id="helpText">📅 スタンプを選んで連続入力モード！</p>
+      </div>
+    </div>
+
+    <div id="settingsTab" class="hidden">
+      <div class="card">
+        <h3 style="font-size: 16px; margin-bottom: 16px; color: #1f2937;">⚙️ 設定</h3>
+        
+        <div style="margin-bottom: 24px; padding: 16px; background: #fef3c7; border-radius: 12px; border: 2px solid #fbbf24;">
+          <h4 style="font-size: 14px; margin-bottom: 12px; color: #1f2937; font-weight: 600;">🔒 パスワード保護</h4>
+          <p style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">2人だけが見れるようにパスワードを設定</p>
+          <div style="margin-bottom: 12px;">
+            <input type="password" id="newPassword" placeholder="新しいパスワード"
+              style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; margin-bottom: 8px;">
+            <input type="password" id="confirmPassword" placeholder="パスワード確認"
+              style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+          </div>
+          <button onclick="setPassword()" 
+            style="width: 100%; padding: 12px; background: #fbbf24; color: #78350f; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            パスワードを設定
+          </button>
+          <p style="font-size: 11px; color: #6b7280; margin-top: 8px; text-align: center;" id="passwordStatus">
+            <span id="passwordStatusText">パスワード未設定</span>
+          </p>
+        </div>
+
+        <div style="margin-bottom: 24px; padding: 16px; background: #fce7f3; border-radius: 12px;">
+          <h4 style="font-size: 14px; margin-bottom: 12px; color: #1f2937; font-weight: 600;">🔗 共有コード</h4>
+          <div style="background: white; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+            <div style="font-size: 28px; font-weight: 700; color: #f472b6; letter-spacing: 4px;" id="shareCodeSettings">-----</div>
+          </div>
+          <p style="font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 8px;">このコードを相手に教えてください</p>
+          <p style="font-size: 11px; color: #ef4444; text-align: center;">※2人とも同じコードを入力すると同期されます</p>
+        </div>
+
+        <div style="margin-bottom: 24px; padding: 16px; background: #f9fafb; border-radius: 12px;">
+          <h4 style="font-size: 14px; margin-bottom: 12px; color: #1f2937; font-weight: 600;">👤 名前の変更</h4>
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; color: #6b7280; display: block; margin-bottom: 4px;">あなたの名前:</label>
+            <input type="text" id="myNameSetting" value="" 
+              style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; color: #6b7280; display: block; margin-bottom: 4px;">相手の名前:</label>
+            <input type="text" id="partnerNameSetting" value=""
+              style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
+          </div>
+          <button onclick="updateNames()" 
+            style="width: 100%; padding: 12px; background: linear-gradient(135deg, #f472b6, #db2777); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            名前を保存
+          </button>
+        </div>
+
+        <div style="padding: 16px; background: #f9fafb; border-radius: 12px; border: 2px dashed #e5e7eb;">
+          <h4 style="font-size: 14px; margin-bottom: 8px; color: #1f2937; font-weight: 600;">ℹ️ 使い方</h4>
+          <ul style="font-size: 12px; color: #6b7280; line-height: 1.6; padding-left: 20px;">
+            <li>上の共有コードを相手に教える</li>
+            <li>相手も同じコードを入力する</li>
+            <li>自動的にシフトが同期されます</li>
+            <li>「👥両方」タブで2人のシフトを確認</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modalTitle"></h3>
+        <button class="close-btn" onclick="closeModal()">×</button>
+      </div>
+      <div class="shift-options">
+        <button class="shift-option stamp-day" onclick="addShift('day')">
+          ☀️ 日勤<br><span class="shift-time">8:30-17:00</span>
+        </button>
+        <button class="shift-option stamp-night" onclick="addShift('night')">
+          🌙 夜勤<br><span class="shift-time">16:30-9:00</span>
+        </button>
+        <button class="shift-option stamp-early" onclick="addShift('early')">
+          🌅 早番<br><span class="shift-time">7:00-15:30</span>
+        </button>
+        <button class="shift-option stamp-late" onclick="addShift('late')">
+          🕐 遅番<br><span class="shift-time">11:00-19:30</span>
+        </button>
+        <button class="shift-option stamp-off" onclick="addShift('off')">
+          ☕ 休み<br><span class="shift-time">-</span>
+        </button>
+      </div>
+      <button class="delete-btn" id="deleteBtn" onclick="deleteShift()">シフトを削除</button>
+    </div>
+  </div>
+
+  <div class="setup-modal" id="setupModal">
+    <div class="setup-content">
+      <h2>👋 初期設定</h2>
+      <p>あなたと相手の名前を設定してください</p>
+      
+      <div class="name-input-group">
+        <label>あなたの名前</label>
+        <input type="text" id="myNameInput" placeholder="例: たろう" maxlength="10">
+      </div>
+      
+      <div class="name-input-group">
+        <label>相手の名前</label>
+        <input type="text" id="partnerNameInput" placeholder="例: はなこ" maxlength="10">
+      </div>
+      
+      <button class="setup-btn" onclick="saveNames()">保存して開始</button>
+      
+      <div class="share-section">
+        <h4>🔗 共有コード</h4>
+        <div class="share-code" id="shareCodeDisplay">-----</div>
+        <p class="share-hint">相手もこのコードを入力すれば同期されます</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBx1FZXfwbV5VKORpR19yiu6MFV09NIV_g",
+      authDomain: "myshift-bcc8c.firebaseapp.com",
+      databaseURL: "https://myshift-bcc8c-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "myshift-bcc8c",
+      storageBucket: "myshift-bcc8c.firebasestorage.app",
+      messagingSenderId: "712132708305",
+      appId: "1:712132708305:web:ac475fb8652f56835bc2f0"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const shiftTypes = {
+      day: { name: '日勤', emoji: '☀️', time: '8:30-17:00', class: 'stamp-day' },
+      night: { name: '夜勤', emoji: '🌙', time: '16:30-9:00', class: 'stamp-night' },
+      early: { name: '早番', emoji: '🌅', time: '7:00-15:30', class: 'stamp-early' },
+      late: { name: '遅番', emoji: '🕐', time: '11:00-19:30', class: 'stamp-late' },
+      off: { name: '休み', emoji: '☕', time: '-', class: 'stamp-off' }
+    };
+
+    let currentDate = new Date();
+    let myShifts = {};
+    let partnerShifts = {};
+    let selectedDate = null;
+    let continuousMode = null;
+    let currentProfile = 'mine';
+    let myName = localStorage.getItem('myName') || '';
+    let partnerName = localStorage.getItem('partnerName') || '';
+    let shareCode = localStorage.getItem('shareCode') || generateShareCode();
+    let myUserId = localStorage.getItem('myUserId') || generateUserId();
+    let appPassword = '';
+    let isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+
+    // Firebaseからパスワードを読み込む
+    database.ref(`password/${shareCode}`).once('value').then((snapshot) => {
+      const savedPassword = snapshot.val();
+      if (savedPassword) {
+        appPassword = savedPassword;
+        
+        // パスワードが設定されていて、未認証の場合はログイン画面表示
+        if (!isAuthenticated) {
+          document.getElementById('passwordScreen').classList.remove('hidden');
+        } else {
+          document.getElementById('passwordScreen').classList.add('hidden');
+        }
+      } else {
+        // パスワード未設定の場合は自由にアクセス
+        isAuthenticated = true;
+        sessionStorage.setItem('isAuthenticated', 'true');
+        document.getElementById('passwordScreen').classList.add('hidden');
+      }
+    });
+
+    window.checkPassword = function() {
+      const input = document.getElementById('passwordInput').value;
+      if (input === appPassword) {
+        sessionStorage.setItem('isAuthenticated', 'true');
+        document.getElementById('passwordScreen').classList.add('hidden');
+        document.getElementById('passwordError').classList.remove('show');
+      } else {
+        document.getElementById('passwordError').classList.add('show');
+        document.getElementById('passwordInput').value = '';
+      }
+    };
+
+    // Enterキーでログイン
+    document.addEventListener('DOMContentLoaded', function() {
+      const passwordInput = document.getElementById('passwordInput');
+      if (passwordInput) {
+        passwordInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            checkPassword();
+          }
+        });
+      }
+    });
+
+    function generateShareCode() {
+      const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+      localStorage.setItem('shareCode', code);
+      return code;
+    }
+
+    function generateUserId() {
+      const id = 'user_' + Math.random().toString(36).substring(2, 11);
+      localStorage.setItem('myUserId', id);
+      return id;
+    }
+
+    // Firebase リスナー設定
+    function setupFirebaseListeners() {
+      // 自分のシフトを監視
+      const myShiftsRef = database.ref(`shifts/${shareCode}/${myUserId}`);
+      myShiftsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        myShifts = data || {};
+        renderCalendar();
+        updateSyncStatus('同期完了');
+      });
+
+      // 相手のシフトを監視（全ユーザーから自分以外を取得）
+      const allShiftsRef = database.ref(`shifts/${shareCode}`);
+      allShiftsRef.on('value', (snapshot) => {
+        const allData = snapshot.val() || {};
+        partnerShifts = {};
+        
+        Object.entries(allData).forEach(([userId, shifts]) => {
+          if (userId !== myUserId) {
+            Object.assign(partnerShifts, shifts);
+          }
+        });
+        
+        renderCalendar();
+      });
+
+      // 名前を監視
+      const namesRef = database.ref(`names/${shareCode}`);
+      namesRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          if (data[myUserId]) {
+            myName = data[myUserId];
+            localStorage.setItem('myName', myName);
+          }
+          
+          // 相手の名前を取得
+          Object.entries(data).forEach(([userId, name]) => {
+            if (userId !== myUserId) {
+              partnerName = name;
+              localStorage.setItem('partnerName', partnerName);
+            }
+          });
+          
+          updateNameDisplays();
+        }
+      });
+    }
+
+    function updateSyncStatus(status) {
+      const syncStatus = document.getElementById('syncStatus');
+      syncStatus.innerHTML = `<div class="sync-dot"></div><span>${status}</span>`;
+    }
+
+    function saveToFirebase(dateKey, shiftType) {
+      const shiftRef = database.ref(`shifts/${shareCode}/${myUserId}/${dateKey}`);
+      if (shiftType) {
+        shiftRef.set(shiftType);
+      } else {
+        shiftRef.remove();
+      }
+      updateSyncStatus('保存中...');
+    }
+
+    function saveNamesToFirebase() {
+      const nameRef = database.ref(`names/${shareCode}/${myUserId}`);
+      nameRef.set(myName);
+    }
+
+    window.saveNames = function() {
+      myName = document.getElementById('myNameInput').value.trim() || '自分';
+      partnerName = document.getElementById('partnerNameInput').value.trim() || '相手';
+      
+      localStorage.setItem('myName', myName);
+      localStorage.setItem('partnerName', partnerName);
+      
+      saveNamesToFirebase();
+      updateNameDisplays();
+      document.getElementById('setupModal').classList.remove('show');
+    };
+
+    window.updateNameDisplays = function() {
+      document.getElementById('myNameDisplay').textContent = myName;
+      document.getElementById('partnerNameDisplay').textContent = partnerName;
+      document.getElementById('myNameLegend').textContent = myName;
+      document.getElementById('partnerNameLegend').textContent = partnerName;
+    };
+
+    window.switchProfile = function(profile) {
+      currentProfile = profile;
+      
+      document.querySelectorAll('.profile-btn').forEach(btn => btn.classList.remove('active'));
+      if (profile === 'mine') {
+        document.getElementById('btnMine').classList.add('active');
+        document.getElementById('legend').style.display = 'none';
+      } else if (profile === 'partner') {
+        document.getElementById('btnPartner').classList.add('active');
+        document.getElementById('legend').style.display = 'none';
+      } else {
+        document.getElementById('btnBoth').classList.add('active');
+        document.getElementById('legend').style.display = 'flex';
+      }
+      
+      renderCalendar();
+      
+    };
+
+    function getDateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    window.changeMonth = function(offset) {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1);
+      renderCalendar();
+      
+    };
+
+    window.selectMode = function(shiftType) {
+      if (currentProfile === 'partner') {
+        alert(`${partnerName}のシフトは編集できません`);
+        return;
+      }
+      
+      if (continuousMode === shiftType) {
+        cancelMode();
+      } else {
+        continuousMode = shiftType;
+        const modeIndicator = document.getElementById('modeIndicator');
+        const modeText = document.getElementById('modeText');
+        const shiftInfo = shiftTypes[shiftType];
+        
+        modeText.textContent = `${shiftInfo.emoji} ${shiftInfo.name}を連続入力中`;
+        modeIndicator.classList.add('show');
+        
+        document.querySelectorAll('.stamp').forEach(s => s.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        document.getElementById('helpText').textContent = '📅 日付をタップして入力！キャンセルで終了';
+      }
+    };
+
+    window.cancelMode = function() {
+      continuousMode = null;
+      document.getElementById('modeIndicator').classList.remove('show');
+      document.querySelectorAll('.stamp').forEach(s => s.classList.remove('active'));
+      document.getElementById('helpText').textContent = '📅 スタンプを選んで連続入力モード！';
+    };
+
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      
+      document.getElementById('monthTitle').textContent = `${year}年 ${month + 1}月`;
+      
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startingDayOfWeek = firstDay.getDay();
+      
+      const calendar = document.getElementById('calendar');
+      calendar.innerHTML = '';
+      
+      for (let i = 0; i < startingDayOfWeek; i++) {
+        calendar.innerHTML += '<div></div>';
+      }
+      
+      const today = new Date();
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const dateKey = getDateKey(date);
+        const myShift = myShifts[dateKey];
+        const partnerShift = partnerShifts[dateKey];
+        const isToday = date.toDateString() === today.toDateString();
+        
+        let dayClass = 'calendar-day';
+        if (isToday) dayClass += ' today';
+        
+        let shiftHtml = '';
+        
+        if (currentProfile === 'mine' && myShift) {
+          const shiftInfo = shiftTypes[myShift];
+          shiftHtml = `<div class="day-shift ${shiftInfo.class}">${shiftInfo.name}</div>`;
+        } else if (currentProfile === 'partner' && partnerShift) {
+          const shiftInfo = shiftTypes[partnerShift];
+          shiftHtml = `<div class="day-shift ${shiftInfo.class}" style="opacity: 0.8;">${shiftInfo.name}</div>`;
+        } else if (currentProfile === 'both') {
+          if (myShift && partnerShift) {
+            const myInfo = shiftTypes[myShift];
+            const partnerInfo = shiftTypes[partnerShift];
+            shiftHtml = `
+              <div style="display: flex; flex-direction: column; gap: 2px; width: 100%;">
+                <div class="day-shift ${myInfo.class}" style="font-size: 8px; padding: 1px 2px;">${myInfo.name}</div>
+                <div class="day-shift ${partnerInfo.class}" style="font-size: 8px; padding: 1px 2px; opacity: 0.8;">${partnerInfo.name}</div>
+              </div>
+            `;
+          } else if (myShift) {
+            const shiftInfo = shiftTypes[myShift];
+            shiftHtml = `<div class="day-shift ${shiftInfo.class}">${shiftInfo.name}</div>`;
+          } else if (partnerShift) {
+            const shiftInfo = shiftTypes[partnerShift];
+            shiftHtml = `<div class="day-shift ${shiftInfo.class}" style="opacity: 0.8;">${shiftInfo.name}</div>`;
+          }
+        }
+        
+        calendar.innerHTML += `
+          <div class="${dayClass}" onclick="handleDateClick('${dateKey}')">
+            <div class="day-number">${day}</div>
+            ${shiftHtml}
+          </div>
+        `;
+      }
+    }
+
+    window.handleDateClick = function(dateKey) {
+      if (currentProfile === 'partner') {
+        alert(`${partnerName}のシフトは編集できません`);
+        return;
+      }
+      
+      if (continuousMode) {
+        myShifts[dateKey] = continuousMode;
+        saveToFirebase(dateKey, continuousMode);
+        renderCalendar();
+        
+      } else {
+        selectDate(dateKey);
+      }
+    };
+
+    function selectDate(dateKey) {
+      selectedDate = dateKey;
+      const [year, month, day] = dateKey.split('-');
+      document.getElementById('modalTitle').textContent = `${parseInt(month)}月${parseInt(day)}日のシフト`;
+      
+      const deleteBtn = document.getElementById('deleteBtn');
+      if (myShifts[dateKey]) {
+        deleteBtn.style.display = 'block';
+      } else {
+        deleteBtn.style.display = 'none';
+      }
+      
+      document.getElementById('modal').classList.add('show');
+    }
+
+    window.closeModal = function() {
+      document.getElementById('modal').classList.remove('show');
+    };
+
+    window.addShift = function(shiftType) {
+      if (selectedDate) {
+        myShifts[selectedDate] = shiftType;
+        saveToFirebase(selectedDate, shiftType);
+        renderCalendar();
+        
+        closeModal();
+      }
+    };
+
+    window.deleteShift = function() {
+      if (selectedDate) {
+        delete myShifts[selectedDate];
+        saveToFirebase(selectedDate, null);
+        renderCalendar();
+        
+        closeModal();
+      }
+    };
+
+    window.switchTab = function(tab) {
+      cancelMode();
+      
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      document.getElementById('calendarTab').classList.add('hidden');
+      document.getElementById('settingsTab').classList.add('hidden');
+      
+      if (tab === 'calendar') {
+        document.getElementById('calendarTab').classList.remove('hidden');
+      } else if (tab === 'settings') {
+        document.getElementById('settingsTab').classList.remove('hidden');
+        showSettings();
+      }
+    };
+
+    function showSettings() {
+      document.getElementById('shareCodeSettings').textContent = shareCode;
+      document.getElementById('myNameSetting').value = myName;
+      document.getElementById('partnerNameSetting').value = partnerName;
+      
+      // パスワード状態を表示
+      const statusText = document.getElementById('passwordStatusText');
+      if (appPassword) {
+        statusText.textContent = '✅ パスワード設定済み';
+        statusText.style.color = '#10b981';
+      } else {
+        statusText.textContent = 'パスワード未設定';
+        statusText.style.color = '#6b7280';
+      }
+    }
+
+    window.setPassword = function() {
+      const newPass = document.getElementById('newPassword').value;
+      const confirmPass = document.getElementById('confirmPassword').value;
+      
+      if (!newPass) {
+        alert('パスワードを入力してください');
+        return;
+      }
+      
+      if (newPass !== confirmPass) {
+        alert('パスワードが一致しません');
+        return;
+      }
+      
+      if (newPass.length < 4) {
+        alert('パスワードは4文字以上にしてください');
+        return;
+      }
+      
+      // Firebaseに保存
+      appPassword = newPass;
+      database.ref(`password/${shareCode}`).set(appPassword);
+      
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+      
+      alert('パスワードを設定しました！\n\n相手も同じ共有コードを使えば、このパスワードでログインできます。');
+      showSettings();
+    };
+
+    window.updateNames = function() {
+      const newMyName = document.getElementById('myNameSetting').value.trim();
+      const newPartnerName = document.getElementById('partnerNameSetting').value.trim();
+      
+      if (newMyName) {
+        myName = newMyName;
+        localStorage.setItem('myName', myName);
+        saveNamesToFirebase();
+      }
+      
+      if (newPartnerName) {
+        partnerName = newPartnerName;
+        localStorage.setItem('partnerName', partnerName);
+      }
+      
+      updateNameDisplays();
+      alert('名前を保存しました！');
+    };
+
+
+    // 初期化
+    if (!myName || !partnerName) {
+      document.getElementById('setupModal').classList.add('show');
+      document.getElementById('shareCodeDisplay').textContent = shareCode;
+    }
+    
+    updateNameDisplays();
+    setupFirebaseListeners();
+    renderCalendar();
+    
+  </script>
+</body>
+</html>
