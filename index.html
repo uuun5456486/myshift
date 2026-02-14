@@ -237,20 +237,7 @@
       font-size: 24px;
       padding: 8px 16px;
       cursor: pointer;
-      border-radius: 8px;
       transition: background 0.2s;
-    }
-
-    .today-btn {
-      font-size: 12px !important;
-      padding: 6px 12px !important;
-      background: #fce7f3 !important;
-      color: #db2777;
-      border: 1px solid #f472b6 !important;
-      margin-left: 8px;
-      font-weight: 600;
-      border-radius: 12px;
-      cursor: pointer;
     }
 
     .month-title-btn {
@@ -272,8 +259,7 @@
       background: #fce7f3;
     }
 
-    color: #1f2937;
-    }
+
 
     .shift-stamps {
       margin-bottom: 16px;
@@ -919,7 +905,8 @@
   <div class="container">
     <div class="tabs">
       <button class="tab active" onclick="switchTab('calendar')">カレンダー</button>
-      <button class="tab" onclick="switchTab('settings')">設定</button>
+      <button class="tab" onclick="switchTab('shiftSettings')">シフト設定</button>
+      <button class="tab" onclick="switchTab('settings')">アプリ設定</button>
     </div>
 
     <div id="calendarTab">
@@ -980,6 +967,20 @@
           <div class="stamp stamp-off" onclick="selectMode('off')">☕<br>休み</div>
         </div>
         <p class="help-text" id="helpText">📅 スタンプを選んで連続入力モード！</p>
+      </div>
+    </div>
+
+    <div id="shiftSettingsTab" class="hidden">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-size: 16px; color: #1f2937;">📝 シフトパターンの編集</h3>
+          <button onclick="openShiftEditModal()"
+            style="background: #f472b6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">＋
+            追加</button>
+        </div>
+        <div id="shiftPatternList" class="stats-list">
+          <!-- JSで生成 -->
+        </div>
       </div>
     </div>
 
@@ -1045,22 +1046,8 @@
         <h3 id="modalTitle"></h3>
         <button class="close-btn" onclick="closeModal()">×</button>
       </div>
-      <div class="shift-options">
-        <button class="shift-option stamp-day" onclick="addShift('day')">
-          ☀️ 日勤<br><span class="shift-time">8:30-17:00</span>
-        </button>
-        <button class="shift-option stamp-night" onclick="addShift('night')">
-          🌙 夜勤<br><span class="shift-time">16:30-9:00</span>
-        </button>
-        <button class="shift-option stamp-early" onclick="addShift('early')">
-          🌅 早番<br><span class="shift-time">7:00-15:30</span>
-        </button>
-        <button class="shift-option stamp-late" onclick="addShift('late')">
-          🕐 遅番<br><span class="shift-time">11:00-19:30</span>
-        </button>
-        <button class="shift-option stamp-off" onclick="addShift('off')">
-          ☕ 休み<br><span class="shift-time">-</span>
-        </button>
+      <div class="shift-options" id="shiftOptionsContainer">
+        <!-- JSで生成 -->
       </div>
       <button class="delete-btn" id="deleteBtn" onclick="deleteShift()">シフトを削除</button>
     </div>
@@ -1117,6 +1104,61 @@
     </div>
   </div>
 
+  <div class="modal" id="shiftEditModal">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="shiftEditTitle">シフトパターン編集</h3>
+        <button class="close-btn" onclick="closeShiftEditModal()">×</button>
+      </div>
+
+      <div class="name-input-group">
+        <label>シフト名</label>
+        <input type="text" id="shiftNameInput" placeholder="例: 早番A">
+      </div>
+
+      <div class="name-input-group">
+        <label>時間</label>
+        <input type="text" id="shiftTimeInput" placeholder="例: 9:00-18:00">
+      </div>
+
+      <div class="name-input-group">
+        <label>絵文字</label>
+        <input type="text" id="shiftEmojiInput" placeholder="例: ⏰" maxlength="2">
+      </div>
+
+      <div class="name-input-group">
+        <label>カラー</label>
+        <div style="display: flex; gap: 8px;">
+          <div class="color-option"
+            style="background: #fbbf24; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;"
+            onclick="selectColor('stamp-day')"></div>
+          <div class="color-option"
+            style="background: #4f46e5; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;"
+            onclick="selectColor('stamp-night')"></div>
+          <div class="color-option"
+            style="background: #fb923c; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;"
+            onclick="selectColor('stamp-early')"></div>
+          <div class="color-option"
+            style="background: #a855f7; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;"
+            onclick="selectColor('stamp-late')"></div>
+          <div class="color-option"
+            style="background: #4ade80; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;"
+            onclick="selectColor('stamp-off')"></div>
+          <div class="color-option"
+            style="background: #f472b6; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;"
+            onclick="selectColor('my-dot')"></div>
+        </div>
+        <input type="hidden" id="shiftClassInput">
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-top: 24px;">
+        <button class="delete-btn" id="deleteShiftPatternBtn" onclick="deleteShiftPattern()"
+          style="background: #ef4444; color: white;">削除</button>
+        <button class="setup-btn" onclick="saveShiftPattern()">保存</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -1135,13 +1177,155 @@
     const app = firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    const shiftTypes = {
-      day: { name: '日勤', emoji: '☀️', time: '8:30-17:00', class: 'stamp-day' },
-      night: { name: '夜勤', emoji: '🌙', time: '16:30-9:00', class: 'stamp-night' },
+    const defaultShiftTypes = {
+      day: { name: '日勤', emoji: '☀️', time: '8:30-17:30', class: 'stamp-day' },
+      night: { name: '夜勤', emoji: '🌙', time: '20:30-5:30', class: 'stamp-night' },
       early: { name: '早番', emoji: '🌅', time: '7:00-15:30', class: 'stamp-early' },
       late: { name: '遅番', emoji: '🕐', time: '11:00-19:30', class: 'stamp-late' },
       off: { name: '休み', emoji: '☕', time: '-', class: 'stamp-off' }
     };
+
+    let shiftTypes = JSON.parse(localStorage.getItem('shiftTypes')) || defaultShiftTypes;
+
+    // マイグレーション（デフォルト値の更新：古い設定があれば新しい時間に更新）
+    if (shiftTypes.day.time === '8:30-17:00') {
+      shiftTypes.day.time = '8:30-17:30';
+    }
+    if (shiftTypes.night.time === '16:30-9:00') {
+      shiftTypes.night.time = '20:30-5:30';
+    }
+    localStorage.setItem('shiftTypes', JSON.stringify(shiftTypes));
+
+    // 初期化時にシフトオプションを生成
+    function renderShiftOptions() {
+      const container = document.getElementById('shiftOptionsContainer');
+      container.innerHTML = '';
+      Object.entries(shiftTypes).forEach(([type, info]) => {
+        const btn = document.createElement('button');
+        btn.className = `shift-option ${info.class}`;
+        btn.onclick = () => addShift(type);
+        btn.innerHTML = `${info.emoji} ${info.name}<br><span class="shift-time">${info.time}</span>`;
+        container.appendChild(btn);
+      });
+
+      renderShiftSettingsList();
+    }
+
+    function renderShiftSettingsList() {
+      const list = document.getElementById('shiftPatternList');
+      if (!list) return;
+
+      list.innerHTML = '';
+      Object.entries(shiftTypes).forEach(([key, info]) => {
+        const item = document.createElement('div');
+        item.className = 'stat-item';
+        item.onclick = () => openShiftEditModal(key);
+        item.style.cursor = 'pointer';
+
+        item.innerHTML = `
+          <div class="stat-left">
+            <div class="stat-icon ${info.class}">${info.emoji}</div>
+            <div class="stat-info">
+              <h4>${info.name}</h4>
+              <p>${info.time}</p>
+            </div>
+          </div>
+          <div style="color: #f472b6;">✎</div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // シフトパターン編集モーダル
+    let editingShiftKey = null;
+
+    window.openShiftEditModal = function (key = null) {
+      editingShiftKey = key;
+      const modal = document.getElementById('shiftEditModal');
+      const deleteBtn = document.getElementById('deleteShiftPatternBtn');
+
+      if (key) {
+        const info = shiftTypes[key];
+        document.getElementById('shiftEditTitle').textContent = 'シフトパターン編集';
+        document.getElementById('shiftNameInput').value = info.name;
+        document.getElementById('shiftTimeInput').value = info.time;
+        document.getElementById('shiftEmojiInput').value = info.emoji;
+        document.getElementById('shiftClassInput').value = info.class;
+        deleteBtn.style.display = 'block';
+      } else {
+        document.getElementById('shiftEditTitle').textContent = 'シフトパターン追加';
+        document.getElementById('shiftNameInput').value = '';
+        document.getElementById('shiftTimeInput').value = '';
+        document.getElementById('shiftEmojiInput').value = '';
+        document.getElementById('shiftClassInput').value = 'stamp-day';
+        deleteBtn.style.display = 'none';
+      }
+
+      modal.classList.add('show');
+    };
+
+    window.closeShiftEditModal = function () {
+      document.getElementById('shiftEditModal').classList.remove('show');
+    };
+
+    window.selectColor = function (className) {
+      document.getElementById('shiftClassInput').value = className;
+      // 視覚的フィードバック（選択中の枠線など）は今回省略
+      alert('カラーを選択しました');
+    };
+
+    window.saveShiftPattern = function () {
+      const name = document.getElementById('shiftNameInput').value.trim();
+      const time = document.getElementById('shiftTimeInput').value.trim();
+      const emoji = document.getElementById('shiftEmojiInput').value.trim();
+      const className = document.getElementById('shiftClassInput').value;
+
+      if (!name || !emoji) {
+        alert('名前と絵文字は必須です');
+        return;
+      }
+
+      const key = editingShiftKey || 'custom_' + Date.now();
+
+      shiftTypes[key] = {
+        name: name,
+        emoji: emoji,
+        time: time,
+        class: className
+      };
+
+      localStorage.setItem('shiftTypes', JSON.stringify(shiftTypes));
+
+      // Firebaseにも保存（オプション：今回はローカルのみで進めるが、要望あれば同期可能）
+      // database.ref(`settings/${shareCode}/shiftTypes`).set(shiftTypes);
+
+      renderShiftOptions();
+      closeShiftEditModal();
+      renderCalendar(); // カレンダー再描画（変更反映のため）
+    };
+
+    window.deleteShiftPattern = function () {
+      if (editingShiftKey && confirm('このシフトパターンを削除しますか？')) {
+        delete shiftTypes[editingShiftKey];
+        localStorage.setItem('shiftTypes', JSON.stringify(shiftTypes));
+        renderShiftOptions();
+        closeShiftEditModal();
+        renderCalendar();
+      }
+    };
+
+    // 初期化時にシフトオプションを生成
+    function renderShiftOptions() {
+      const container = document.getElementById('shiftOptionsContainer');
+      container.innerHTML = '';
+      Object.entries(shiftTypes).forEach(([type, info]) => {
+        const btn = document.createElement('button');
+        btn.className = `shift-option ${info.class}`;
+        btn.onclick = () => addShift(type);
+        btn.innerHTML = `${info.emoji} ${info.name}<br><span class="shift-time">${info.time}</span>`;
+        container.appendChild(btn);
+      });
+    }
 
     // 祝日ロジック
     function getHoliday(date) {
@@ -1410,20 +1594,22 @@
         const modeText = document.getElementById('modeText');
         const shiftInfo = shiftTypes[shiftType];
 
-        modeText.textContent = `${shiftInfo.emoji} ${shiftInfo.name}を連続入力中`;
-        modeIndicator.classList.add('show');
+        if (shiftInfo) {
+          modeText.textContent = `${shiftInfo.emoji} ${shiftInfo.name}を連続入力中`;
+          modeIndicator.classList.add('show');
 
-        document.querySelectorAll('.stamp').forEach(s => s.classList.remove('active'));
-        event.target.classList.add('active');
+          document.querySelectorAll('.shift-option').forEach(s => s.classList.remove('active'));
+          // 見た目上のアクティブ化（動的生成なのでクラス付与が必要かもだが、今回は簡易化）
 
-        document.getElementById('helpText').textContent = '📅 日付をタップして入力！キャンセルで終了';
+          document.getElementById('helpText').textContent = '📅 日付をタップして入力！キャンセルで終了';
+        }
       }
     };
 
     window.cancelMode = function () {
       continuousMode = null;
       document.getElementById('modeIndicator').classList.remove('show');
-      document.querySelectorAll('.stamp').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.shift-option').forEach(s => s.classList.remove('active'));
       document.getElementById('helpText').textContent = '📅 スタンプを選んで連続入力モード！';
     };
 
@@ -1462,26 +1648,36 @@
 
         if (currentProfile === 'mine' && myShift) {
           const shiftInfo = shiftTypes[myShift];
-          shiftHtml = `<div class="day-shift ${shiftInfo.class}">${shiftInfo.name}</div>`;
+          if (shiftInfo) {
+            shiftHtml = `<div class="day-shift ${shiftInfo.class}">${shiftInfo.name}</div>`;
+          }
         } else if (currentProfile === 'partner' && partnerShift) {
           const shiftInfo = shiftTypes[partnerShift];
-          shiftHtml = `<div class="day-shift ${shiftInfo.class}" style="opacity: 0.8;">${shiftInfo.name}</div>`;
+          if (shiftInfo) {
+            shiftHtml = `<div class="day-shift ${shiftInfo.class}" style="opacity: 0.8;">${shiftInfo.name}</div>`;
+          }
         } else if (currentProfile === 'both') {
           if (myShift && partnerShift) {
             const myInfo = shiftTypes[myShift];
             const partnerInfo = shiftTypes[partnerShift];
-            shiftHtml = `
-              <div style="display: flex; flex-direction: column; gap: 2px; width: 100%;">
-                <div class="day-shift ${myInfo.class}" style="font-size: 8px; padding: 1px 2px;">${myInfo.name}</div>
-                <div class="day-shift ${partnerInfo.class}" style="font-size: 8px; padding: 1px 2px; opacity: 0.8;">${partnerInfo.name}</div>
-              </div>
-            `;
+            if (myInfo && partnerInfo) {
+              shiftHtml = `
+                <div style="display: flex; flex-direction: column; gap: 2px; width: 100%;">
+                  <div class="day-shift ${myInfo.class}" style="font-size: 8px; padding: 1px 2px;">${myInfo.name}</div>
+                  <div class="day-shift ${partnerInfo.class}" style="font-size: 8px; padding: 1px 2px; opacity: 0.8;">${partnerInfo.name}</div>
+                </div>
+              `;
+            }
           } else if (myShift) {
             const shiftInfo = shiftTypes[myShift];
-            shiftHtml = `<div class="day-shift ${shiftInfo.class}">${shiftInfo.name}</div>`;
+            if (shiftInfo) {
+              shiftHtml = `<div class="day-shift ${shiftInfo.class}">${shiftInfo.name}</div>`;
+            }
           } else if (partnerShift) {
             const shiftInfo = shiftTypes[partnerShift];
-            shiftHtml = `<div class="day-shift ${shiftInfo.class}" style="opacity: 0.8;">${shiftInfo.name}</div>`;
+            if (shiftInfo) {
+              shiftHtml = `<div class="day-shift ${shiftInfo.class}" style="opacity: 0.8;">${shiftInfo.name}</div>`;
+            }
           }
         }
 
@@ -1556,10 +1752,14 @@
       event.target.classList.add('active');
 
       document.getElementById('calendarTab').classList.add('hidden');
+      document.getElementById('shiftSettingsTab').classList.add('hidden');
       document.getElementById('settingsTab').classList.add('hidden');
 
       if (tab === 'calendar') {
         document.getElementById('calendarTab').classList.remove('hidden');
+      } else if (tab === 'shiftSettings') {
+        document.getElementById('shiftSettingsTab').classList.remove('hidden');
+        renderShiftSettingsList();
       } else if (tab === 'settings') {
         document.getElementById('settingsTab').classList.remove('hidden');
         showSettings();
