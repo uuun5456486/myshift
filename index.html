@@ -735,6 +735,7 @@
       font-weight: 600;
       margin-bottom: 16px;
       font-family: inherit;
+      text-transform: uppercase;
     }
 
     .password-input:focus {
@@ -777,6 +778,16 @@
       margin-bottom: 16px;
     }
 
+    .auth-hint {
+      font-size: 12px;
+      color: #6b7280;
+      text-align: center;
+      margin-top: 12px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -785,18 +796,21 @@
 <body>
   <div class="password-screen" id="passwordScreen">
     <div class="password-box">
-      <div class="lock-icon">🔒</div>
-      <h2>パスワード入力</h2>
-      <p>2人だけのパスワードを入力してください</p>
+      <div class="lock-icon">🔗</div>
+      <h2>共有コード入力</h2>
+      <p>2人の共有コードを入力してください</p>
       <input 
-        type="password" 
+        type="text" 
         class="password-input" 
         id="passwordInput" 
-        placeholder="パスワード"
-        maxlength="20"
+        placeholder="共有コード"
+        maxlength="10"
       >
-      <button class="password-btn" onclick="checkPassword()">ログイン</button>
-      <div class="password-error" id="passwordError">パスワードが違います</div>
+      <button class="password-btn" onclick="checkPassword()">開く</button>
+      <div class="password-error" id="passwordError">共有コードが違います</div>
+      <div class="auth-hint">
+        💡 初めての方は適当なコードを入力すると新規作成されます
+      </div>
     </div>
   </div>
 
@@ -890,24 +904,6 @@
       <div class="card">
         <h3 style="font-size: 16px; margin-bottom: 16px; color: #1f2937;">⚙️ 設定</h3>
         
-        <div style="margin-bottom: 24px; padding: 16px; background: #fef3c7; border-radius: 12px; border: 2px solid #fbbf24;">
-          <h4 style="font-size: 14px; margin-bottom: 12px; color: #1f2937; font-weight: 600;">🔒 パスワード保護</h4>
-          <p style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">2人だけが見れるようにパスワードを設定</p>
-          <div style="margin-bottom: 12px;">
-            <input type="password" id="newPassword" placeholder="新しいパスワード"
-              style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; margin-bottom: 8px;">
-            <input type="password" id="confirmPassword" placeholder="パスワード確認"
-              style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
-          </div>
-          <button onclick="setPassword()" 
-            style="width: 100%; padding: 12px; background: #fbbf24; color: #78350f; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-            パスワードを設定
-          </button>
-          <p style="font-size: 11px; color: #6b7280; margin-top: 8px; text-align: center;" id="passwordStatus">
-            <span id="passwordStatusText">パスワード未設定</span>
-          </p>
-        </div>
-
         <div style="margin-bottom: 24px; padding: 16px; background: #fce7f3; border-radius: 12px;">
           <h4 style="font-size: 14px; margin-bottom: 12px; color: #1f2937; font-weight: 600;">🔗 共有コード</h4>
           <div style="background: white; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
@@ -1053,38 +1049,41 @@
     let partnerName = localStorage.getItem('partnerName') || '';
     let shareCode = localStorage.getItem('shareCode') || generateShareCode();
     let myUserId = localStorage.getItem('myUserId') || generateUserId();
-    let appPassword = '';
-    let isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+    let isAuthenticated = localStorage.getItem('authenticatedCode') === shareCode;
 
-    // Firebaseからパスワードを読み込む
-    database.ref(`password/${shareCode}`).once('value').then((snapshot) => {
-      const savedPassword = snapshot.val();
-      if (savedPassword) {
-        appPassword = savedPassword;
-        
-        // パスワードが設定されていて、未認証の場合はログイン画面表示
-        if (!isAuthenticated) {
-          document.getElementById('passwordScreen').classList.remove('hidden');
-        } else {
-          document.getElementById('passwordScreen').classList.add('hidden');
-        }
-      } else {
-        // パスワード未設定の場合は自由にアクセス
-        isAuthenticated = true;
-        sessionStorage.setItem('isAuthenticated', 'true');
-        document.getElementById('passwordScreen').classList.add('hidden');
-      }
-    });
+    // 共有コード認証チェック
+    if (!isAuthenticated) {
+      document.getElementById('passwordScreen').classList.remove('hidden');
+    } else {
+      document.getElementById('passwordScreen').classList.add('hidden');
+    }
 
     window.checkPassword = function() {
-      const input = document.getElementById('passwordInput').value;
-      if (input === appPassword) {
-        sessionStorage.setItem('isAuthenticated', 'true');
-        document.getElementById('passwordScreen').classList.add('hidden');
-        document.getElementById('passwordError').classList.remove('show');
-      } else {
+      const input = document.getElementById('passwordInput').value.trim().toUpperCase();
+      
+      if (!input) {
+        document.getElementById('passwordError').textContent = '共有コードを入力してください';
         document.getElementById('passwordError').classList.add('show');
-        document.getElementById('passwordInput').value = '';
+        return;
+      }
+      
+      // 入力されたコードを共有コードとして使用
+      shareCode = input;
+      localStorage.setItem('shareCode', shareCode);
+      localStorage.setItem('authenticatedCode', shareCode);
+      
+      sessionStorage.setItem('isAuthenticated', 'true');
+      document.getElementById('passwordScreen').classList.add('hidden');
+      document.getElementById('passwordError').classList.remove('show');
+      
+      // Firebaseリスナーを設定
+      setupFirebaseListeners();
+      renderCalendar();
+      
+      // 初回設定モーダルを表示
+      if (!myName || !partnerName) {
+        document.getElementById('setupModal').classList.add('show');
+        document.getElementById('shareCodeDisplay').textContent = shareCode;
       }
     };
 
@@ -1245,7 +1244,7 @@
 
     window.selectMode = function(shiftType) {
       if (currentProfile === 'partner') {
-        alert(`${partnerName}のシフトは編集できません`);
+        // 相手のカレンダー表示中は何もしない（アラートも出さない）
         return;
       }
       
@@ -1341,7 +1340,7 @@
 
     window.handleDateClick = function(dateKey) {
       if (currentProfile === 'partner') {
-        alert(`${partnerName}のシフトは編集できません`);
+        // 相手のカレンダー表示中は何もしない
         return;
       }
       
@@ -1415,47 +1414,7 @@
       document.getElementById('shareCodeSettings').textContent = shareCode;
       document.getElementById('myNameSetting').value = myName;
       document.getElementById('partnerNameSetting').value = partnerName;
-      
-      // パスワード状態を表示
-      const statusText = document.getElementById('passwordStatusText');
-      if (appPassword) {
-        statusText.textContent = '✅ パスワード設定済み';
-        statusText.style.color = '#10b981';
-      } else {
-        statusText.textContent = 'パスワード未設定';
-        statusText.style.color = '#6b7280';
-      }
     }
-
-    window.setPassword = function() {
-      const newPass = document.getElementById('newPassword').value;
-      const confirmPass = document.getElementById('confirmPassword').value;
-      
-      if (!newPass) {
-        alert('パスワードを入力してください');
-        return;
-      }
-      
-      if (newPass !== confirmPass) {
-        alert('パスワードが一致しません');
-        return;
-      }
-      
-      if (newPass.length < 4) {
-        alert('パスワードは4文字以上にしてください');
-        return;
-      }
-      
-      // Firebaseに保存
-      appPassword = newPass;
-      database.ref(`password/${shareCode}`).set(appPassword);
-      
-      document.getElementById('newPassword').value = '';
-      document.getElementById('confirmPassword').value = '';
-      
-      alert('パスワードを設定しました！\n\n相手も同じ共有コードを使えば、このパスワードでログインできます。');
-      showSettings();
-    };
 
     window.updateNames = function() {
       const newMyName = document.getElementById('myNameSetting').value.trim();
