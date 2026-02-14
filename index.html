@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -27,7 +28,7 @@
       background: white;
       border-bottom: 4px solid #f472b6;
       padding: 15px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .header-content {
@@ -83,8 +84,15 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
     }
 
     .container {
@@ -100,7 +108,7 @@
       padding: 4px;
       border-radius: 12px;
       margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .tab {
@@ -126,7 +134,7 @@
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .profile-selector {
@@ -134,7 +142,7 @@
       border-radius: 12px;
       padding: 12px;
       margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .profile-selector h3 {
@@ -199,8 +207,13 @@
       border-radius: 50%;
     }
 
-    .my-dot { background: #f472b6; }
-    .partner-dot { background: #a855f7; }
+    .my-dot {
+      background: #f472b6;
+    }
+
+    .partner-dot {
+      background: #a855f7;
+    }
 
     .month-nav {
       display: flex;
@@ -219,13 +232,38 @@
       transition: background 0.2s;
     }
 
+    .today-btn {
+      font-size: 12px !important;
+      padding: 6px 12px !important;
+      background: #fce7f3 !important;
+      color: #db2777;
+      border: 1px solid #f472b6 !important;
+      margin-left: 8px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .month-title-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #1f2937;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+
+    .month-title-btn:hover {
+      background: #f3f4f6;
+    }
+
     .month-nav button:active {
       background: #fce7f3;
     }
 
-    .month-nav h2 {
-      font-size: 18px;
-      color: #1f2937;
+    color: #1f2937;
     }
 
     .shift-stamps {
@@ -252,7 +290,7 @@
       text-align: center;
       font-size: 11px;
       font-weight: 700;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       transition: transform 0.2s;
     }
@@ -266,11 +304,30 @@
       transform: scale(1.05);
     }
 
-    .stamp-day { background: #fbbf24; color: #78350f; }
-    .stamp-night { background: #4f46e5; color: white; }
-    .stamp-early { background: #fb923c; color: #7c2d12; }
-    .stamp-late { background: #a855f7; color: white; }
-    .stamp-off { background: #4ade80; color: #14532d; }
+    .stamp-day {
+      background: #fbbf24;
+      color: #78350f;
+    }
+
+    .stamp-night {
+      background: #4f46e5;
+      color: white;
+    }
+
+    .stamp-early {
+      background: #fb923c;
+      color: #7c2d12;
+    }
+
+    .stamp-late {
+      background: #a855f7;
+      color: white;
+    }
+
+    .stamp-off {
+      background: #4ade80;
+      color: #14532d;
+    }
 
     .help-text {
       text-align: center;
@@ -292,8 +349,17 @@
       padding: 8px 0;
     }
 
-    .weekday:first-child { color: #ef4444; }
-    .weekday:last-child { color: #3b82f6; }
+    .weekday:first-child {
+      color: #ef4444;
+    }
+
+    .weekday:last-child {
+      color: #3b82f6;
+    }
+
+    .calendar-day.holiday .day-number {
+      color: #ef4444;
+    }
 
     .calendar-grid {
       display: grid;
@@ -344,7 +410,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       z-index: 1000;
       animation: fadeIn 0.2s;
     }
@@ -356,13 +422,23 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
+      from {
+        transform: translateY(100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
     }
 
     .modal-content {
@@ -409,7 +485,7 @@
       cursor: pointer;
       font-weight: 700;
       font-size: 14px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s;
     }
 
@@ -464,18 +540,19 @@
     }
 
     @keyframes slideDown {
-      from { 
+      from {
         opacity: 0;
         transform: translateX(-50%) translateY(-20px);
       }
-      to { 
+
+      to {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
       }
     }
 
     .mode-cancel {
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.3);
       border: none;
       color: white;
       padding: 4px 12px;
@@ -493,7 +570,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       z-index: 2000;
       align-items: center;
       justify-content: center;
@@ -707,7 +784,7 @@
       padding: 32px;
       max-width: 400px;
       width: 100%;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     }
 
     .password-box h2 {
@@ -793,19 +870,14 @@
     }
   </style>
 </head>
+
 <body>
   <div class="password-screen" id="passwordScreen">
     <div class="password-box">
       <div class="lock-icon">🔗</div>
       <h2>共有コード入力</h2>
       <p>2人の共有コードを入力してください</p>
-      <input 
-        type="text" 
-        class="password-input" 
-        id="passwordInput" 
-        placeholder="共有コード"
-        maxlength="10"
-      >
+      <input type="text" class="password-input" id="passwordInput" placeholder="共有コード" maxlength="10">
       <button class="password-btn" onclick="checkPassword()">開く</button>
       <div class="password-error" id="passwordError">共有コードが違います</div>
       <div class="auth-hint">
@@ -869,7 +941,10 @@
       <div class="card">
         <div class="month-nav">
           <button onclick="changeMonth(-1)">←</button>
-          <h2 id="monthTitle"></h2>
+          <div style="display: flex; align-items: center;">
+            <button id="monthTitle" class="month-title-btn" onclick="openDatePicker()"></button>
+            <button class="today-btn" onclick="goToToday()">今日</button>
+          </div>
           <button onclick="changeMonth(1)">→</button>
         </div>
       </div>
@@ -903,24 +978,25 @@
     <div id="settingsTab" class="hidden">
       <div class="card">
         <h3 style="font-size: 16px; margin-bottom: 16px; color: #1f2937;">⚙️ 設定</h3>
-        
+
         <div style="margin-bottom: 24px; padding: 16px; background: #fce7f3; border-radius: 12px;">
           <h4 style="font-size: 14px; margin-bottom: 12px; color: #1f2937; font-weight: 600;">🔗 共有コード</h4>
           <div style="background: white; padding: 16px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
-            <div style="font-size: 28px; font-weight: 700; color: #f472b6; letter-spacing: 4px;" id="shareCodeSettings">-----</div>
+            <div style="font-size: 28px; font-weight: 700; color: #f472b6; letter-spacing: 4px;" id="shareCodeSettings">
+              -----</div>
           </div>
           <p style="font-size: 12px; color: #6b7280; text-align: center; margin-bottom: 12px;">このコードを相手に教えてください</p>
-          
+
           <div style="border-top: 1px solid #fce7f3; padding-top: 12px; margin-top: 12px;">
             <p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">相手のコードを入力して同期:</p>
             <input type="text" id="joinShareCode" placeholder="相手のコードを入力" maxlength="10"
               style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; text-transform: uppercase; margin-bottom: 8px;">
-            <button onclick="joinWithCode()" 
+            <button onclick="joinWithCode()"
               style="width: 100%; padding: 10px; background: #f472b6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
               このコードで同期する
             </button>
           </div>
-          
+
           <p style="font-size: 11px; color: #ef4444; text-align: center; margin-top: 8px;">※2人とも同じコードを入力すると同期されます</p>
         </div>
 
@@ -928,7 +1004,7 @@
           <h4 style="font-size: 14px; margin-bottom: 12px; color: #1f2937; font-weight: 600;">👤 名前の変更</h4>
           <div style="margin-bottom: 12px;">
             <label style="font-size: 12px; color: #6b7280; display: block; margin-bottom: 4px;">あなたの名前:</label>
-            <input type="text" id="myNameSetting" value="" 
+            <input type="text" id="myNameSetting" value=""
               style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
           </div>
           <div style="margin-bottom: 12px;">
@@ -936,7 +1012,7 @@
             <input type="text" id="partnerNameSetting" value=""
               style="width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;">
           </div>
-          <button onclick="updateNames()" 
+          <button onclick="updateNames()"
             style="width: 100%; padding: 12px; background: linear-gradient(135deg, #f472b6, #db2777); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
             名前を保存
           </button>
@@ -986,12 +1062,12 @@
     <div class="setup-content">
       <h2>👋 初期設定</h2>
       <p>あなたと相手の名前を設定してください</p>
-      
+
       <div class="name-input-group">
         <label>あなたの名前</label>
         <input type="text" id="myNameInput" placeholder="例: たろう" maxlength="10">
       </div>
-      
+
       <div class="name-input-group">
         <label>相手の名前</label>
         <input type="text" id="partnerNameInput" placeholder="例: はなこ" maxlength="10">
@@ -999,17 +1075,37 @@
 
       <div class="name-input-group">
         <label>共有コード</label>
-        <input type="text" id="shareCodeInput" placeholder="相手から教わったコードを入力" maxlength="10" style="text-transform: uppercase;">
+        <input type="text" id="shareCodeInput" placeholder="相手から教わったコードを入力" maxlength="10"
+          style="text-transform: uppercase;">
         <p style="font-size: 11px; color: #6b7280; margin-top: 4px;">※相手がいない場合は空欄でOK</p>
       </div>
-      
+
       <button class="setup-btn" onclick="saveNames()">保存して開始</button>
-      
+
       <div class="share-section">
         <h4>🔗 あなたの共有コード</h4>
         <div class="share-code" id="shareCodeDisplay">-----</div>
         <p class="share-hint">このコードを相手に教えてください</p>
       </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+  <div class="modal" id="datePickerModal" onclick="closeDatePicker()">
+    <div class="modal-content" onclick="event.stopPropagation()" style="text-align: center;">
+      <div class="modal-header">
+        <h3>年月を選択</h3>
+        <button class="close-btn" onclick="closeDatePicker()">×</button>
+      </div>
+      <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px;">
+        <select id="yearSelect"
+          style="padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 16px;"></select>
+        <select id="monthSelect"
+          style="padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 16px;"></select>
+      </div>
+      <button class="setup-btn" onclick="jumpToDate()">移動する</button>
     </div>
   </div>
 
@@ -1039,6 +1135,56 @@
       off: { name: '休み', emoji: '☕', time: '-', class: 'stamp-off' }
     };
 
+    // 祝日ロジック
+    function getHoliday(date) {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const weekDay = date.getDay(); // 0:Sun, 1:Mon...
+
+      // 固定祝日
+      const fixedHolidays = {
+        '1-1': '元日',
+        '2-11': '建国記念の日',
+        '2-23': '天皇誕生日',
+        '4-29': '昭和の日',
+        '5-3': '憲法記念日',
+        '5-4': 'みどりの日',
+        '5-5': 'こどもの日',
+        '8-11': '山の日',
+        '11-3': '文化の日',
+        '11-23': '勤労感謝の日'
+      };
+
+      let holidayName = fixedHolidays[`${month}-${day}`];
+
+      // ハッピーマンデー
+      // 成人の日: 1月の第2月曜日
+      if (month === 1 && weekDay === 1 && day >= 8 && day <= 14) holidayName = '成人の日';
+      // 海の日: 7月の第3月曜日
+      if (month === 7 && weekDay === 1 && day >= 15 && day <= 21) holidayName = '海の日';
+      // 敬老の日: 9月の第3月曜日
+      if (month === 9 && weekDay === 1 && day >= 15 && day <= 21) holidayName = '敬老の日';
+      // スポーツの日: 10月の第2月曜日
+      if (month === 10 && weekDay === 1 && day >= 8 && day <= 14) holidayName = 'スポーツの日';
+
+      // 春分・秋分（簡易計算: 2024-2030年頃まで有効）
+      if (month === 3 && day === Math.floor(20.8431 + 0.242194 * (year - 1980) - Math.floor((year - 1980) / 4))) holidayName = '春分の日';
+      if (month === 9 && day === Math.floor(23.2488 + 0.242194 * (year - 1980) - Math.floor((year - 1980) / 4))) holidayName = '秋分の日';
+
+      // 振替休日判定（前日が祝日かつ日曜日）
+      if (!holidayName) {
+        const yesterday = new Date(date);
+        yesterday.setDate(date.getDate() - 1);
+        const yHoliday = getHoliday(yesterday);
+        if (yHoliday && yesterday.getDay() === 0) {
+          return '振替休日';
+        }
+      }
+
+      return holidayName;
+    }
+
     let currentDate = new Date();
     let myShifts = {};
     let partnerShifts = {};
@@ -1058,28 +1204,28 @@
       document.getElementById('passwordScreen').classList.add('hidden');
     }
 
-    window.checkPassword = function() {
+    window.checkPassword = function () {
       const input = document.getElementById('passwordInput').value.trim().toUpperCase();
-      
+
       if (!input) {
         document.getElementById('passwordError').textContent = '共有コードを入力してください';
         document.getElementById('passwordError').classList.add('show');
         return;
       }
-      
+
       // 入力されたコードを共有コードとして使用
       shareCode = input;
       localStorage.setItem('shareCode', shareCode);
       localStorage.setItem('authenticatedCode', shareCode);
-      
+
       sessionStorage.setItem('isAuthenticated', 'true');
       document.getElementById('passwordScreen').classList.add('hidden');
       document.getElementById('passwordError').classList.remove('show');
-      
+
       // Firebaseリスナーを設定
       setupFirebaseListeners();
       renderCalendar();
-      
+
       // 初回設定モーダルを表示
       if (!myName || !partnerName) {
         document.getElementById('setupModal').classList.add('show');
@@ -1088,10 +1234,10 @@
     };
 
     // Enterキーでログイン
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const passwordInput = document.getElementById('passwordInput');
       if (passwordInput) {
-        passwordInput.addEventListener('keypress', function(e) {
+        passwordInput.addEventListener('keypress', function (e) {
           if (e.key === 'Enter') {
             checkPassword();
           }
@@ -1127,13 +1273,13 @@
       allShiftsRef.on('value', (snapshot) => {
         const allData = snapshot.val() || {};
         partnerShifts = {};
-        
+
         Object.entries(allData).forEach(([userId, shifts]) => {
           if (userId !== myUserId) {
             Object.assign(partnerShifts, shifts);
           }
         });
-        
+
         renderCalendar();
       });
 
@@ -1146,7 +1292,7 @@
             myName = data[myUserId];
             localStorage.setItem('myName', myName);
           }
-          
+
           // 相手の名前を取得
           Object.entries(data).forEach(([userId, name]) => {
             if (userId !== myUserId) {
@@ -1154,7 +1300,7 @@
               localStorage.setItem('partnerName', partnerName);
             }
           });
-          
+
           updateNameDisplays();
         }
       });
@@ -1180,10 +1326,10 @@
       nameRef.set(myName);
     }
 
-    window.saveNames = function() {
+    window.saveNames = function () {
       myName = document.getElementById('myNameInput').value.trim() || '自分';
       partnerName = document.getElementById('partnerNameInput').value.trim() || '相手';
-      
+
       // 共有コードが入力されていればそれを使う
       const inputShareCode = document.getElementById('shareCodeInput').value.trim().toUpperCase();
       if (inputShareCode) {
@@ -1191,28 +1337,28 @@
         localStorage.setItem('shareCode', shareCode);
         console.log('入力された共有コードを使用:', shareCode);
       }
-      
+
       localStorage.setItem('myName', myName);
       localStorage.setItem('partnerName', partnerName);
-      
+
       saveNamesToFirebase();
       updateNameDisplays();
       document.getElementById('setupModal').classList.remove('show');
-      
+
       // Firebaseリスナーを再設定
       setupFirebaseListeners();
     };
 
-    window.updateNameDisplays = function() {
+    window.updateNameDisplays = function () {
       document.getElementById('myNameDisplay').textContent = myName;
       document.getElementById('partnerNameDisplay').textContent = partnerName;
       document.getElementById('myNameLegend').textContent = myName;
       document.getElementById('partnerNameLegend').textContent = partnerName;
     };
 
-    window.switchProfile = function(profile) {
+    window.switchProfile = function (profile) {
       currentProfile = profile;
-      
+
       document.querySelectorAll('.profile-btn').forEach(btn => btn.classList.remove('active'));
       if (profile === 'mine') {
         document.getElementById('btnMine').classList.add('active');
@@ -1224,9 +1370,9 @@
         document.getElementById('btnBoth').classList.add('active');
         document.getElementById('legend').style.display = 'flex';
       }
-      
+
       renderCalendar();
-      
+
     };
 
     function getDateKey(date) {
@@ -1236,18 +1382,18 @@
       return `${year}-${month}-${day}`;
     }
 
-    window.changeMonth = function(offset) {
+    window.changeMonth = function (offset) {
       currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1);
       renderCalendar();
-      
+
     };
 
-    window.selectMode = function(shiftType) {
+    window.selectMode = function (shiftType) {
       if (currentProfile === 'partner') {
         // 相手のカレンダー表示中は何もしない（アラートも出さない）
         return;
       }
-      
+
       if (continuousMode === shiftType) {
         cancelMode();
       } else {
@@ -1255,18 +1401,18 @@
         const modeIndicator = document.getElementById('modeIndicator');
         const modeText = document.getElementById('modeText');
         const shiftInfo = shiftTypes[shiftType];
-        
+
         modeText.textContent = `${shiftInfo.emoji} ${shiftInfo.name}を連続入力中`;
         modeIndicator.classList.add('show');
-        
+
         document.querySelectorAll('.stamp').forEach(s => s.classList.remove('active'));
         event.target.classList.add('active');
-        
+
         document.getElementById('helpText').textContent = '📅 日付をタップして入力！キャンセルで終了';
       }
     };
 
-    window.cancelMode = function() {
+    window.cancelMode = function () {
       continuousMode = null;
       document.getElementById('modeIndicator').classList.remove('show');
       document.querySelectorAll('.stamp').forEach(s => s.classList.remove('active'));
@@ -1276,21 +1422,21 @@
     function renderCalendar() {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
-      
+
       document.getElementById('monthTitle').textContent = `${year}年 ${month + 1}月`;
-      
+
       const firstDay = new Date(year, month, 1);
       const lastDay = new Date(year, month + 1, 0);
       const daysInMonth = lastDay.getDate();
       const startingDayOfWeek = firstDay.getDay();
-      
+
       const calendar = document.getElementById('calendar');
       calendar.innerHTML = '';
-      
+
       for (let i = 0; i < startingDayOfWeek; i++) {
         calendar.innerHTML += '<div></div>';
       }
-      
+
       const today = new Date();
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
@@ -1298,12 +1444,14 @@
         const myShift = myShifts[dateKey];
         const partnerShift = partnerShifts[dateKey];
         const isToday = date.toDateString() === today.toDateString();
-        
+        const holidayName = getHoliday(date);
+
         let dayClass = 'calendar-day';
         if (isToday) dayClass += ' today';
-        
+        if (holidayName) dayClass += ' holiday';
+
         let shiftHtml = '';
-        
+
         if (currentProfile === 'mine' && myShift) {
           const shiftInfo = shiftTypes[myShift];
           shiftHtml = `<div class="day-shift ${shiftInfo.class}">${shiftInfo.name}</div>`;
@@ -1328,7 +1476,7 @@
             shiftHtml = `<div class="day-shift ${shiftInfo.class}" style="opacity: 0.8;">${shiftInfo.name}</div>`;
           }
         }
-        
+
         calendar.innerHTML += `
           <div class="${dayClass}" onclick="handleDateClick('${dateKey}')">
             <div class="day-number">${day}</div>
@@ -1338,17 +1486,17 @@
       }
     }
 
-    window.handleDateClick = function(dateKey) {
+    window.handleDateClick = function (dateKey) {
       if (currentProfile === 'partner') {
         // 相手のカレンダー表示中は何もしない
         return;
       }
-      
+
       if (continuousMode) {
         myShifts[dateKey] = continuousMode;
         saveToFirebase(dateKey, continuousMode);
         renderCalendar();
-        
+
       } else {
         selectDate(dateKey);
       }
@@ -1358,50 +1506,50 @@
       selectedDate = dateKey;
       const [year, month, day] = dateKey.split('-');
       document.getElementById('modalTitle').textContent = `${parseInt(month)}月${parseInt(day)}日のシフト`;
-      
+
       const deleteBtn = document.getElementById('deleteBtn');
       if (myShifts[dateKey]) {
         deleteBtn.style.display = 'block';
       } else {
         deleteBtn.style.display = 'none';
       }
-      
+
       document.getElementById('modal').classList.add('show');
     }
 
-    window.closeModal = function() {
+    window.closeModal = function () {
       document.getElementById('modal').classList.remove('show');
     };
 
-    window.addShift = function(shiftType) {
+    window.addShift = function (shiftType) {
       if (selectedDate) {
         myShifts[selectedDate] = shiftType;
         saveToFirebase(selectedDate, shiftType);
         renderCalendar();
-        
+
         closeModal();
       }
     };
 
-    window.deleteShift = function() {
+    window.deleteShift = function () {
       if (selectedDate) {
         delete myShifts[selectedDate];
         saveToFirebase(selectedDate, null);
         renderCalendar();
-        
+
         closeModal();
       }
     };
 
-    window.switchTab = function(tab) {
+    window.switchTab = function (tab) {
       cancelMode();
-      
+
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       event.target.classList.add('active');
-      
+
       document.getElementById('calendarTab').classList.add('hidden');
       document.getElementById('settingsTab').classList.add('hidden');
-      
+
       if (tab === 'calendar') {
         document.getElementById('calendarTab').classList.remove('hidden');
       } else if (tab === 'settings') {
@@ -1416,62 +1564,145 @@
       document.getElementById('partnerNameSetting').value = partnerName;
     }
 
-    window.updateNames = function() {
+    window.updateNames = function () {
       const newMyName = document.getElementById('myNameSetting').value.trim();
       const newPartnerName = document.getElementById('partnerNameSetting').value.trim();
-      
+
       if (newMyName) {
         myName = newMyName;
         localStorage.setItem('myName', myName);
         saveNamesToFirebase();
       }
-      
+
       if (newPartnerName) {
         partnerName = newPartnerName;
         localStorage.setItem('partnerName', partnerName);
       }
-      
+
       updateNameDisplays();
       alert('名前を保存しました！');
     };
 
-    window.joinWithCode = function() {
+    window.joinWithCode = function () {
       const inputCode = document.getElementById('joinShareCode').value.trim().toUpperCase();
-      
+
       if (!inputCode) {
         alert('共有コードを入力してください');
         return;
       }
-      
+
       if (inputCode === shareCode) {
         alert('既にこのコードを使用中です');
         return;
       }
-      
+
       if (confirm(`共有コード「${inputCode}」で同期しますか？\n\n※現在のデータは「${shareCode}」に残ります`)) {
         shareCode = inputCode;
         localStorage.setItem('shareCode', shareCode);
-        
+
         // データをリセット
         myShifts = {};
         partnerShifts = {};
-        
+
         alert('共有コードを変更しました！\nページを再読み込みします。');
         location.reload();
       }
     };
 
 
+
+    // Today Button
+    window.goToToday = function () {
+      currentDate = new Date();
+      renderCalendar();
+    };
+
+    // Date Picker Logic
+    window.openDatePicker = function () {
+      const modal = document.getElementById('datePickerModal');
+      const yearSelect = document.getElementById('yearSelect');
+      const monthSelect = document.getElementById('monthSelect');
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth() + 1;
+
+      // Reset
+      yearSelect.innerHTML = '';
+      monthSelect.innerHTML = '';
+
+      // Years: current +/- 5 years
+      for (let i = currentYear - 5; i <= currentYear + 5; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i + '年';
+        if (i === currentYear) option.selected = true;
+        yearSelect.appendChild(option);
+      }
+
+      // Months
+      for (let i = 1; i <= 12; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i + '月';
+        if (i === currentMonth) option.selected = true;
+        monthSelect.appendChild(option);
+      }
+
+      modal.classList.add('show');
+    };
+
+    window.closeDatePicker = function () {
+      document.getElementById('datePickerModal').classList.remove('show');
+    };
+
+    window.jumpToDate = function () {
+      const year = parseInt(document.getElementById('yearSelect').value);
+      const month = parseInt(document.getElementById('monthSelect').value);
+      currentDate = new Date(year, month - 1, 1);
+      renderCalendar();
+      closeDatePicker();
+    };
+
+    // Swipe Logic
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const calendarElement = document.getElementById('calendar');
+
+    calendarElement.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    calendarElement.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      const threshold = 50; // min swipe distance
+      const swipeDistance = touchEndX - touchStartX;
+
+      if (Math.abs(swipeDistance) > threshold) {
+        if (swipeDistance > 0) {
+          // Right swipe -> Prev month
+          changeMonth(-1);
+        } else {
+          // Left swipe -> Next month
+          changeMonth(1);
+        }
+      }
+    }
+
     // 初期化
     if (!myName || !partnerName) {
       document.getElementById('setupModal').classList.add('show');
       document.getElementById('shareCodeDisplay').textContent = shareCode;
     }
-    
+
     updateNameDisplays();
     setupFirebaseListeners();
     renderCalendar();
-    
+
   </script>
 </body>
+
 </html>
