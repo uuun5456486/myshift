@@ -913,7 +913,11 @@
       <div class="profile-selector">
         <h3>表示切替</h3>
         <div class="profile-buttons">
-          <button class="profile-btn active" onclick="switchProfile('mine')" id="btnMine">
+          <button class="profile-btn active" onclick="switchProfile('both')" id="btnBoth">
+            <div class="profile-icon">👥</div>
+            <div class="profile-name">両方</div>
+          </button>
+          <button class="profile-btn" onclick="switchProfile('mine')" id="btnMine">
             <div class="profile-icon">👤</div>
             <div class="profile-name" id="myNameDisplay">自分</div>
           </button>
@@ -921,12 +925,8 @@
             <div class="profile-icon">💜</div>
             <div class="profile-name" id="partnerNameDisplay">相手</div>
           </button>
-          <button class="profile-btn" onclick="switchProfile('both')" id="btnBoth">
-            <div class="profile-icon">👥</div>
-            <div class="profile-name">両方</div>
-          </button>
         </div>
-        <div class="legend" id="legend" style="display: none;">
+        <div class="legend" id="legend">
           <div class="legend-dot my-dot"></div>
           <span id="myNameLegend">自分</span>
           <div class="legend-dot partner-dot"></div>
@@ -1296,8 +1296,8 @@
 
       localStorage.setItem('shiftTypes', JSON.stringify(shiftTypes));
 
-      // Firebaseにも保存（オプション：今回はローカルのみで進めるが、要望あれば同期可能）
-      // database.ref(`settings/${shareCode}/shiftTypes`).set(shiftTypes);
+      // Firebaseに同期
+      database.ref(`settings/${shareCode}/shiftTypes`).set(shiftTypes);
 
       renderShiftOptions();
       closeShiftEditModal();
@@ -1382,7 +1382,7 @@
     let partnerShifts = {};
     let selectedDate = null;
     let continuousMode = null;
-    let currentProfile = 'mine';
+    let currentProfile = 'both';
     let myName = localStorage.getItem('myName') || '';
     let partnerName = localStorage.getItem('partnerName') || '';
     let shareCode = localStorage.getItem('shareCode') || generateShareCode();
@@ -1494,6 +1494,18 @@
           });
 
           updateNameDisplays();
+        }
+      });
+
+      // シフト設定を監視
+      const shiftTypesRef = database.ref(`settings/${shareCode}/shiftTypes`);
+      shiftTypesRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          shiftTypes = data;
+          localStorage.setItem('shiftTypes', JSON.stringify(shiftTypes));
+          renderShiftOptions(); // スタンプとモーダルを更新
+          renderCalendar(); // カレンダーも更新
         }
       });
     }
