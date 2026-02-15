@@ -959,12 +959,8 @@
 
       <div class="card shift-stamps">
         <h3>シフトスタンプ</h3>
-        <div class="stamps-grid">
-          <div class="stamp stamp-day" onclick="selectMode('day')">☀️<br>日勤</div>
-          <div class="stamp stamp-night" onclick="selectMode('night')">🌙<br>夜勤</div>
-          <div class="stamp stamp-early" onclick="selectMode('early')">🌅<br>早番</div>
-          <div class="stamp stamp-late" onclick="selectMode('late')">🕐<br>遅番</div>
-          <div class="stamp stamp-off" onclick="selectMode('off')">☕<br>休み</div>
+        <div class="stamps-grid" id="stampsGrid">
+          <!-- ここに動的に生成 -->
         </div>
         <p class="help-text" id="helpText">📅 スタンプを選んで連続入力モード！</p>
       </div>
@@ -1243,6 +1239,7 @@
       editingShiftKey = key;
       const modal = document.getElementById('shiftEditModal');
       const deleteBtn = document.getElementById('deleteShiftPatternBtn');
+      const defaultShiftKeys = ['day', 'night', 'early', 'late', 'off'];
 
       if (key) {
         const info = shiftTypes[key];
@@ -1251,7 +1248,13 @@
         document.getElementById('shiftTimeInput').value = info.time;
         document.getElementById('shiftEmojiInput').value = info.emoji;
         document.getElementById('shiftClassInput').value = info.class;
-        deleteBtn.style.display = 'block';
+        
+        // 基本シフトは削除ボタンを非表示
+        if (defaultShiftKeys.includes(key)) {
+          deleteBtn.style.display = 'none';
+        } else {
+          deleteBtn.style.display = 'block';
+        }
       } else {
         document.getElementById('shiftEditTitle').textContent = 'シフトパターン追加';
         document.getElementById('shiftNameInput').value = '';
@@ -1305,9 +1308,22 @@
     };
 
     window.deleteShiftPattern = function () {
-      if (editingShiftKey && confirm('このシフトパターンを削除しますか？')) {
+      if (!editingShiftKey) return;
+      
+      // 基本シフトは削除不可
+      const defaultShiftKeys = ['day', 'night', 'early', 'late', 'off'];
+      if (defaultShiftKeys.includes(editingShiftKey)) {
+        alert('基本シフトは削除できません。\nカスタムシフトのみ削除可能です。');
+        return;
+      }
+      
+      if (confirm('このシフトパターンを削除しますか？')) {
         delete shiftTypes[editingShiftKey];
         localStorage.setItem('shiftTypes', JSON.stringify(shiftTypes));
+        
+        // Firebaseに同期
+        database.ref(`settings/${shareCode}/shiftTypes`).set(shiftTypes);
+        
         renderShiftOptions();
         closeShiftEditModal();
         renderCalendar();
@@ -1324,6 +1340,23 @@
         btn.onclick = () => addShift(type);
         btn.innerHTML = `${info.emoji} ${info.name}<br><span class="shift-time">${info.time}</span>`;
         container.appendChild(btn);
+      });
+      
+      // スタンプも更新
+      renderStamps();
+    }
+
+    function renderStamps() {
+      const stampsGrid = document.getElementById('stampsGrid');
+      if (!stampsGrid) return;
+      
+      stampsGrid.innerHTML = '';
+      Object.entries(shiftTypes).forEach(([type, info]) => {
+        const stamp = document.createElement('div');
+        stamp.className = `stamp ${info.class}`;
+        stamp.onclick = () => selectMode(type);
+        stamp.innerHTML = `${info.emoji}<br>${info.name}`;
+        stampsGrid.appendChild(stamp);
       });
     }
 
@@ -1919,6 +1952,7 @@
     }
 
     updateNameDisplays();
+    renderStamps(); // スタンプを初期表示
     setupFirebaseListeners();
     renderCalendar();
 
